@@ -20,7 +20,7 @@ public class squelette_appli {
 	private static void listeAnimaux() throws SQLException {
 		// A COMPLETER
 		Statement stm = conn.createStatement();
-		ResultSet res = stm.executeQuery("select type_an from lesanimaux");
+		ResultSet res = stm.executeQuery("select distinct type_an from lesanimaux");
 		while(res.next()){
 			String s = res.getString("type_an");
 			System.out.println(s);
@@ -38,18 +38,22 @@ public class squelette_appli {
 
 	private static void commit() throws SQLException {
 		// A COMPLETER
+    conn.commit();
 	}				
 
 	private static void rollback() throws SQLException {
 		// A COMPLETER
+    conn.rollback();
 	}		
 	
 	private static void getIsolation() throws SQLException {
 		// A COMPLETER
+    conn.getTransactionIsolation();
 	}
 
 	private static void setIsolation() throws SQLException {
 		// A COMPLETER
+    conn.setTransactionIsolation();
 	}	
 	
     public static void main(String args[]) {
