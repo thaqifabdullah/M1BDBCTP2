@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.io.*;
 
 public class squelette_appli {
 	
@@ -8,6 +9,8 @@ public class squelette_appli {
 	static final String PASSWD = "Cyi7ggmB";
 
 	static Connection conn = null;
+
+
 		
 	private static void menu() {
 		System.out.println("*** Choisir une action a effectuer : ***");
@@ -19,21 +22,65 @@ public class squelette_appli {
 
 	private static void listeAnimaux() throws SQLException {
 		// A COMPLETER
-		Statement stm = conn.createStatement();
-		ResultSet res = stm.executeQuery("select distinct type_an from lesanimaux");
-		while(res.next()){
-			String s = res.getString("type_an");
-			System.out.println(s);
-		}
-
+    try{
+      BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+      System.out.println("Entrez le numéro de la cage des animaux à lister");
+      String s = buff.readLine();
+      int no = Integer.parseInt(s);
+  		Statement stm = conn.createStatement();
+  		ResultSet res = stm.executeQuery("select * from lesanimaux where nocage="+no);
+  		while(res.next()){
+        String noCage = res.getString("noCage");
+  			String nomA = res.getString("nomA");
+        String sexe = res.getString("sexe");
+        String type_an = res.getString("type_an");
+  			System.out.println(noCage+ "  "+ nomA +"  " + sexe +"  "+ type_an );
+      }
+    }catch(IOException e){
+      System.err.println(e);
+    }
+     
 	}
 
 	private static void deplacerAnimal() throws SQLException {
 		// A COMPLETER
+   Statement stm = conn.createStatement();
+   ResultSet res = stm.executeQuery("select fonction from LesCages");
+  while(res.next()){
+      String s = res.getString("fonction");
+      System.out.println(s);
+  }
+   //ResultSet res = stm.executeQuery("update lesanimaux set fonction_cage ='' where nomA ='' ");
 	}	
 
 	private static void ajouterMaladie() throws SQLException {
 		// A COMPLETER
+    String n,s,t,f;
+      try{
+        BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Entrez le nom de l'animal");
+        n = buff.readLine();
+        System.out.println("Entrez le sexe de l'animal");
+        s = buff.readLine();
+        System.out.println("Entrez le type de l'animal");
+        t = buff.readLine();
+        System.out.println("Entrez le fonction de cage de l'animal");
+        f = buff.readLine();
+
+        /*Chercher les cages disponible*/
+        Statement stm = conn.createStatement();
+        ResultSet res = stm.executeQuery("select noCage from lesanimaux where fonction_cage="+f);
+
+        /*Choisir la cage qui contient moins d'animaux*/
+        System.out.println("Liste de cages possible");
+        while(res.next()){
+          String ss = res.getString("noCage");
+          System.out.println(ss);
+        }
+    
+      }catch(IOException e){
+            System.err.println(e);
+          }
 	}		
 
 	private static void commit() throws SQLException {
@@ -53,7 +100,7 @@ public class squelette_appli {
 
 	private static void setIsolation() throws SQLException {
 		// A COMPLETER
-    conn.setTransactionIsolation();
+    conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 	}	
 	
     public static void main(String args[]) {
@@ -94,6 +141,7 @@ public class squelette_appli {
 
   	    // Liberation des ressources et fermeture de la connexion...
 		// A COMPLETER
+        conn.close();
   	    
   	    System.out.println("au revoir");
   	    
@@ -107,8 +155,7 @@ public class squelette_appli {
               System.out.println("Affichage du code d'erreur");
   	          System.out.println(e.getErrorCode());	    
 
-          }
-     }
+          } 
 	
-
+        }
 }
